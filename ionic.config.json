@@ -1,0 +1,7 @@
+{
+  "name": "myfitnesspal-clone",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
