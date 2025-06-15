@@ -1,0 +1,123 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/diary"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Add Food</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Search Bar -->
+  <ion-searchbar 
+    [(ngModel)]="searchTerm" 
+    (ionInput)="onSearchInput($event)" 
+    placeholder="Search for food..."
+    showClearButton="focus">
+  </ion-searchbar>
+
+  <!-- Meal Selection -->
+  <ion-segment [(ngModel)]="selectedMeal" (ionChange)="onMealChange($event)">
+    <ion-segment-button value="breakfast">
+      <ion-label>Breakfast</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="lunch">
+      <ion-label>Lunch</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="dinner">
+      <ion-label>Dinner</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="snacks">
+      <ion-label>Snacks</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- Quick Add Options -->
+  <div class="quick-add-section" *ngIf="!searchTerm">
+    <h3>Quick Add</h3>
+    <ion-list>
+      <ion-item button (click)="quickAddCalories()">
+        <ion-icon name="flash-outline" slot="start"></ion-icon>
+        <ion-label>Quick Add Calories</ion-label>
+      </ion-item>
+      <ion-item button (click)="scanBarcode()">
+        <ion-icon name="barcode-outline" slot="start"></ion-icon>
+        <ion-label>Scan Barcode</ion-label>
+      </ion-item>
+      <ion-item button (click)="createRecipe()">
+        <ion-icon name="restaurant-outline" slot="start"></ion-icon>
+        <ion-label>Create Recipe</ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!-- Recent Foods -->
+  <div class="recent-foods-section" *ngIf="!searchTerm">
+    <h3>Recent Foods</h3>
+    <ion-list>
+      <ion-item button *ngFor="let food of recentFoods" (click)="selectFood(food)">
+        <ion-label>
+          <h2>{{ food.name }}</h2>
+          <p>{{ food.brand }} - {{ food.calories }} cal per {{ food.serving }}</p>
+        </ion-label>
+        <ion-note slot="end">{{ food.calories }} cal</ion-note>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!-- Frequent Foods -->
+  <div class="frequent-foods-section" *ngIf="!searchTerm">
+    <h3>Frequent Foods</h3>
+    <ion-list>
+      <ion-item button *ngFor="let food of frequentFoods" (click)="selectFood(food)">
+        <ion-label>
+          <h2>{{ food.name }}</h2>
+          <p>{{ food.brand }} - {{ food.calories }} cal per {{ food.serving }}</p>
+        </ion-label>
+        <ion-note slot="end">{{ food.calories }} cal</ion-note>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!-- Search Results -->
+  <div class="search-results" *ngIf="searchTerm && filteredFoods.length > 0">
+    <h3>Search Results</h3>
+    <ion-list>
+      <ion-item button *ngFor="let food of filteredFoods" (click)="selectFood(food)">
+        <ion-label>
+          <h2>{{ food.name }}</h2>
+          <p>{{ food.brand }} - {{ food.calories }} cal per {{ food.serving }}</p>
+        </ion-label>
+        <ion-note slot="end">{{ food.calories }} cal</ion-note>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!-- No Results -->
+  <div class="no-results" *ngIf="searchTerm && filteredFoods.length === 0">
+    <ion-card>
+      <ion-card-content>
+        <h3>No results found</h3>
+        <p>Try different keywords or create a custom food entry.</p>
+        <ion-button expand="block" fill="outline" (click)="createCustomFood()">
+          Create Custom Food
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Popular Categories -->
+  <div class="categories-section" *ngIf="!searchTerm">
+    <h3>Popular Categories</h3>
+    <div class="category-grid">
+      <ion-button 
+        *ngFor="let category of categories" 
+        fill="outline" 
+        class="category-button"
+        (click)="selectCategory(category)">
+        <ion-icon [name]="category.icon" slot="start"></ion-icon>
+        {{ category.name }}
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

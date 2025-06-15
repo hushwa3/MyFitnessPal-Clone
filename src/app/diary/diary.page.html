@@ -1,0 +1,201 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Food Diary</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear">
+        <ion-icon name="calendar-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Date Navigation -->
+  <div class="date-navigation">
+    <ion-button fill="clear" size="small">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </ion-button>
+    <h2>{{ getCurrentDate() }}</h2>
+    <ion-button fill="clear" size="small">
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </ion-button>
+  </div>
+
+  <!-- Calorie Summary Card -->
+  <ion-card class="summary-card">
+    <ion-card-content>
+      <div class="calorie-summary">
+        <div class="goal-section">
+          <h2>1,500</h2>
+          <p>Goal</p>
+        </div>
+        <div class="minus">-</div>
+        <div class="food-section">
+          <h2>850</h2>
+          <p>Food</p>
+        </div>
+        <div class="plus">+</div>
+        <div class="exercise-section">
+          <h2>200</h2>
+          <p>Exercise</p>
+        </div>
+        <div class="equals">=</div>
+        <div class="remaining-section">
+          <h2 class="remaining">850</h2>
+          <p>Remaining</p>
+        </div>
+      </div>
+      
+      <ion-progress-bar value="0.57" color="success"></ion-progress-bar>
+      <p class="progress-text">You have 850 calories remaining</p>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Meals Section -->
+  <div class="meals-section">
+    <!-- Breakfast -->
+    <ion-card>
+      <ion-card-header>
+        <div class="meal-header">
+          <ion-card-title>Breakfast</ion-card-title>
+          <span class="calories">245 cal</span>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item>
+            <div>
+              <h3>Oatmeal with Banana</h3>
+              <p>1 serving - 180 cal</p>
+            </div>
+            <ion-button fill="clear" slot="end" size="small">
+              <ion-icon name="pencil-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+          <ion-item>
+            <div>
+              <h3>Coffee with Milk</h3>
+              <p>1 cup - 65 cal</p>
+            </div>
+            <ion-button fill="clear" slot="end" size="small">
+              <ion-icon name="pencil-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-list>
+        <ion-button fill="clear" expand="block" (click)="addFood('breakfast')">
+          <ion-icon name="add" slot="start"></ion-icon>
+          Add Food
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Lunch -->
+    <ion-card>
+      <ion-card-header>
+        <div class="meal-header">
+          <ion-card-title>Lunch</ion-card-title>
+          <span class="calories">420 cal</span>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item>
+            <div>
+              <h3>Chicken Salad</h3>
+              <p>1 serving - 320 cal</p>
+            </div>
+            <ion-button fill="clear" slot="end" size="small">
+              <ion-icon name="pencil-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+          <ion-item>
+            <div>
+              <h3>Apple</h3>
+              <p>1 medium - 100 cal</p>
+            </div>
+            <ion-button fill="clear" slot="end" size="small">
+              <ion-icon name="pencil-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-list>
+        <ion-button fill="clear" expand="block" (click)="addFood('lunch')">
+          <ion-icon name="add" slot="start"></ion-icon>
+          Add Food
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Dinner -->
+    <ion-card>
+      <ion-card-header>
+        <div class="meal-header">
+          <ion-card-title>Dinner</ion-card-title>
+          <span class="calories">185 cal</span>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item>
+            <div>
+              <h3>Grilled Salmon</h3>
+              <p>1 fillet - 185 cal</p>
+            </div>
+            <ion-button fill="clear" slot="end" size="small">
+              <ion-icon name="pencil-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-list>
+        <ion-button fill="clear" expand="block" (click)="addFood('dinner')">
+          <ion-icon name="add" slot="start"></ion-icon>
+          Add Food
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Snacks -->
+    <ion-card>
+      <ion-card-header>
+        <div class="meal-header">
+          <ion-card-title>Snacks</ion-card-title>
+          <span class="calories">0 cal</span>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-button fill="clear" expand="block" (click)="addFood('snacks')">
+          <ion-icon name="add" slot="start"></ion-icon>
+          Add Food
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Exercise Summary -->
+  <ion-card>
+    <ion-card-header>
+      <div class="meal-header">
+        <ion-card-title>Exercise</ion-card-title>
+        <span class="calories">-200 cal</span>
+      </div>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <div>
+            <h3>Treadmill - 30 minutes</h3>
+            <p>200 calories burned</p>
+          </div>
+          <ion-button fill="clear" slot="end" size="small">
+            <ion-icon name="pencil-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-list>
+      <ion-button fill="clear" expand="block" (click)="addExercise()">
+        <ion-icon name="add" slot="start"></ion-icon>
+        Add Exercise
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

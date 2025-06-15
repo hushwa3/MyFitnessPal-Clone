@@ -1,0 +1,193 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/exercise"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ isEditing ? 'Edit Exercise' : 'Add Exercise' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="saveExercise()" [disabled]="!isFormValid()">
+        Save
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Exercise Search -->
+  <div class="search-section" *ngIf="!selectedExercise">
+    <ion-searchbar 
+      [(ngModel)]="searchTerm" 
+      (ionInput)="onSearchChange()" 
+      placeholder="Search exercises...">
+    </ion-searchbar>
+    
+    <!-- Exercise Categories -->
+    <div class="category-chips" *ngIf="searchTerm.length === 0">
+      <ion-chip 
+        *ngFor="let category of exerciseCategories" 
+        [color]="selectedCategory === category.type ? 'primary' : 'medium'"
+        (click)="selectCategory(category.type)">
+        <ion-icon [name]="category.icon"></ion-icon>
+        <ion-label>{{ category.name }}</ion-label>
+      </ion-chip>
+    </div>
+
+    <!-- Exercise List -->
+    <ion-list *ngIf="filteredExercises.length > 0">
+      <ion-item 
+        *ngFor="let exercise of filteredExercises" 
+        button 
+        (click)="selectExercise(exercise)">
+        <ion-icon [name]="getExerciseIcon(exercise.type)" slot="start"></ion-icon>
+        <ion-label>
+          <h2>{{ exercise.name }}</h2>
+          <p>{{ exercise.type | titlecase }} • {{ exercise.caloriesPerMinute }} cal/min</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <!-- No Results -->
+    <div class="no-results" *ngIf="searchTerm.length > 0 && filteredExercises.length === 0">
+      <ion-icon name="search-outline" size="large"></ion-icon>
+      <h3>No exercises found</h3>
+      <p>Try a different search term</p>
+      <ion-button fill="outline" (click)="createCustomExercise()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Create Custom Exercise
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Exercise Details Form -->
+  <div class="exercise-form" *ngIf="selectedExercise">
+    <ion-card>
+      <ion-card-header>
+        <ion-button fill="clear" (click)="goBackToSearch()" class="back-to-search">
+          <ion-icon name="chevron-back-outline" slot="start"></ion-icon>
+          Change Exercise
+        </ion-button>
+        <ion-card-title>{{ selectedExercise.name }}</ion-card-title>
+        <ion-card-subtitle>{{ selectedExercise.type | titlecase }}</ion-card-subtitle>
+      </ion-card-header>
+    </ion-card>
+
+    <!-- Duration Input -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Duration</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">Minutes</ion-label>
+          <ion-input 
+            type="number" 
+            [(ngModel)]="duration" 
+            (ionInput)="calculateCalories()"
+            placeholder="0">
+          </ion-input>
+        </ion-item>
+        
+        <div class="duration-presets">
+          <ion-button 
+            *ngFor="let preset of durationPresets" 
+            fill="outline" 
+            size="small"
+            (click)="setDuration(preset)">
+            {{ preset }}min
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Calories -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Calories Burned</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="calories-display">
+          <h1>{{ calculatedCalories }}</h1>
+          <p>calories</p>
+        </div>
+        
+        <ion-item>
+          <ion-label>Manual entry</ion-label>
+          <ion-toggle [(ngModel)]="manualCalories" (ionChange)="onManualToggle()"></ion-toggle>
+        </ion-item>
+        
+        <ion-item *ngIf="manualCalories">
+          <ion-label position="stacked">Calories</ion-label>
+          <ion-input 
+            type="number" 
+            [(ngModel)]="customCalories"
+            placeholder="0">
+          </ion-input>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Notes -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Notes (Optional)</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-textarea 
+          [(ngModel)]="notes" 
+          placeholder="Add notes about your workout..."
+          rows="3">
+        </ion-textarea>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Date -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Date</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label>Date</ion-label>
+          <ion-datetime 
+            [(ngModel)]="selectedDate" 
+            display-format="MMM DD, YYYY"
+            picker-format="MMM DD YYYY">
+          </ion-datetime>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Custom Exercise Form -->
+  <div class="custom-exercise-form" *ngIf="showCustomForm">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Create Custom Exercise</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">Exercise Name</ion-label>
+          <ion-input [(ngModel)]="customExerciseName" placeholder="Enter exercise name"></ion-input>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label>Category</ion-label>
+          <ion-select [(ngModel)]="customExerciseType" placeholder="Select category">
+            <ion-select-option *ngFor="let category of exerciseCategories" [value]="category.type">
+              {{ category.name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label position="stacked">Calories per minute</ion-label>
+          <ion-input type="number" [(ngModel)]="customCaloriesPerMinute" placeholder="0"></ion-input>
+        </ion-item>
+        
+        <ion-button expand="block" (click)="saveCustomExercise()" [disabled]="!isCustomFormValid()">
+          Create Exercise
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

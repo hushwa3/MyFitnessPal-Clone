@@ -1,0 +1,230 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Profile</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="editProfile()">
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <ion-avatar>
+        <img [src]="userProfile.avatar || 'assets/default-avatar.png'" alt="Profile Picture">
+      </ion-avatar>
+      <ion-button fill="clear" size="small" (click)="changeAvatar()">
+        <ion-icon name="camera-outline"></ion-icon>
+      </ion-button>
+    </div>
+    <h1>{{ userProfile.name }}</h1>
+    <p>{{ userProfile.email }}</p>
+    <div class="member-since">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <span>Member since {{ userProfile.memberSince | date:'MMM yyyy' }}</span>
+    </div>
+  </div>
+
+  <!-- Quick Stats -->
+  <ion-card class="stats-card">
+    <ion-card-content>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <h3>{{ userProfile.currentWeight }}</h3>
+          <p>Current Weight ({{ userProfile.weightUnit }})</p>
+        </div>
+        <div class="stat-item">
+          <h3>{{ userProfile.goalWeight }}</h3>
+          <p>Goal Weight ({{ userProfile.weightUnit }})</p>
+        </div>
+        <div class="stat-item">
+          <h3>{{ userProfile.height }}</h3>
+          <p>Height ({{ userProfile.heightUnit }})</p>
+        </div>
+        <div class="stat-item">
+          <h3>{{ userProfile.age }}</h3>
+          <p>Age</p>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Personal Information -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Personal Information</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-icon name="person-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h3>Name</h3>
+            <p>{{ userProfile.name }}</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item>
+          <ion-icon name="mail-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h3>Email</h3>
+            <p>{{ userProfile.email }}</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item>
+          <ion-icon name="calendar-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h3>Date of Birth</h3>
+            <p>{{ userProfile.dateOfBirth | date:'MMM dd, yyyy' }}</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item>
+          <ion-icon name="transgender-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h3>Gender</h3>
+            <p>{{ userProfile.gender | titlecase }}</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item>
+          <ion-icon name="fitness-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h3>Activity Level</h3>
+            <p>{{ getActivityLevelLabel(userProfile.activityLevel) }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Goals Summary -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Goals</ion-card-title>
+      <ion-button fill="clear" slot="end" (click)="goToGoals()">
+        <ion-icon name="chevron-forward-outline"></ion-icon>
+      </ion-button>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-icon name="target-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h3>Weight Goal</h3>
+            <p>{{ userProfile.goalType }} - {{ Math.abs(userProfile.currentWeight - userProfile.goalWeight) }} {{ userProfile.weightUnit }} to go</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item>
+          <ion-icon name="flame-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h3>Daily Calorie Goal</h3>
+            <p>{{ userProfile.dailyCalorieGoal }} calories</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item>
+          <ion-icon name="scale-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h3>Weekly Goal</h3>
+            <p>{{ userProfile.weeklyGoal }} {{ userProfile.weightUnit }}/week</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Achievements -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Achievements</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="achievements-grid">
+        <div 
+          *ngFor="let achievement of achievements" 
+          class="achievement-item"
+          [class.unlocked]="achievement.unlocked">
+          <ion-icon [name]="achievement.icon" [color]="achievement.unlocked ? 'warning' : 'medium'"></ion-icon>
+          <p>{{ achievement.name }}</p>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Preferences -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Preferences</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-icon name="notifications-outline" slot="start"></ion-icon>
+          <ion-label>Notifications</ion-label>
+          <ion-toggle [(ngModel)]="userProfile.notifications" slot="end"></ion-toggle>
+        </ion-item>
+        
+        <ion-item>
+          <ion-icon name="eye-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h3>Privacy</h3>
+            <p>{{ userProfile.privacy | titlecase }}</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item>
+          <ion-icon name="language-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h3>Units</h3>
+            <p>{{ userProfile.weightUnit === 'kg' ? 'Metric' : 'Imperial' }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Account Actions -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Account</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item button (click)="changePassword()">
+          <ion-icon name="key-outline" slot="start"></ion-icon>
+          <ion-label>Change Password</ion-label>
+          <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+        </ion-item>
+        
+        <ion-item button (click)="exportData()">
+          <ion-icon name="download-outline" slot="start"></ion-icon>
+          <ion-label>Export Data</ion-label>
+          <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+        </ion-item>
+        
+        <ion-item button (click)="deleteAccount()">
+          <ion-icon name="trash-outline" slot="start" color="danger"></ion-icon>
+          <ion-label color="danger">Delete Account</ion-label>
+          <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Logout Button -->
+  <div class="logout-section">
+    <ion-button expand="block" fill="outline" color="medium" (click)="logout()">
+      <ion-icon name="log-out-outline" slot="start"></ion-icon>
+      Logout
+    </ion-button>
+  </div>
+</ion-content>

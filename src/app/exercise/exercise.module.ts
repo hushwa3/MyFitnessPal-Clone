@@ -1,0 +1,20 @@
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+
+import { ExercisePage } from './exercise.page';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: ExercisePage
+  }
+];
+
+@NgModule({
+  imports: [
+    RouterModule.forChild(routes),
+    ExercisePage
+  ]
+})
+export class ExercisePageModule {}
+

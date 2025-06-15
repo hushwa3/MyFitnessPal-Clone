@@ -1,0 +1,146 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Exercise</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToAddExercise()">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Date Navigation -->
+  <div class="date-navigation">
+    <ion-button fill="clear" (click)="previousDay()">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </ion-button>
+    <h2>{{ currentDate | date:'EEEE, MMM d' }}</h2>
+    <ion-button fill="clear" (click)="nextDay()">
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </ion-button>
+  </div>
+
+  <!-- Exercise Summary -->
+  <ion-card class="exercise-summary">
+    <ion-card-content>
+      <div class="summary-row">
+        <div class="summary-item">
+          <span class="summary-number">{{ totalCaloriesBurned }}</span>
+          <span class="summary-label">Calories Burned</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-number">{{ totalMinutes }}</span>
+          <span class="summary-label">Minutes</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-number">{{ exerciseCount }}</span>
+          <span class="summary-label">Exercises</span>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Quick Add Section -->
+  <div class="quick-add-section">
+    <ion-button expand="block" fill="outline" (click)="goToAddExercise()">
+      <ion-icon name="add-outline" slot="start"></ion-icon>
+      Add Exercise
+    </ion-button>
+  </div>
+
+  <!-- Today's Exercises -->
+  <ion-card *ngIf="todaysExercises.length > 0">
+    <ion-card-header>
+      <ion-card-title>Today's Exercises</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item *ngFor="let exercise of todaysExercises" lines="none">
+        <ion-icon [name]="getExerciseIcon(exercise.type)" slot="start"></ion-icon>
+        <ion-label>
+          <h2>{{ exercise.name }}</h2>
+          <p>{{ exercise.duration }} minutes • {{ exercise.calories }} calories burned</p>
+          <p *ngIf="exercise.notes" class="exercise-notes">{{ exercise.notes }}</p>
+        </ion-label>
+        <ion-note slot="end">{{ exercise.calories }} cal</ion-note>
+        <ion-button fill="clear" slot="end" (click)="editExercise(exercise)">
+          <ion-icon name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" slot="end" color="danger" (click)="deleteExercise(exercise)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- No Exercises Message -->
+  <ion-card *ngIf="todaysExercises.length === 0">
+    <ion-card-content class="no-exercises">
+      <ion-icon name="fitness-outline" size="large"></ion-icon>
+      <h3>No exercises logged today</h3>
+      <p>Start tracking your workouts to see your progress!</p>
+      <ion-button expand="block" (click)="goToAddExercise()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>
+        Add Your First Exercise
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Recent Exercises -->
+  <ion-card *ngIf="recentExercises.length > 0">
+    <ion-card-header>
+      <ion-card-title>Recent Exercises</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item *ngFor="let exercise of recentExercises" lines="none" button (click)="addRecentExercise(exercise)">
+        <ion-icon [name]="getExerciseIcon(exercise.type)" slot="start"></ion-icon>
+        <ion-label>
+          <h2>{{ exercise.name }}</h2>
+          <p>{{ exercise.type | titlecase }}</p>
+        </ion-label>
+        <ion-icon name="add-outline" slot="end"></ion-icon>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Exercise Categories -->
+  <div class="exercise-categories">
+    <h3>Exercise Categories</h3>
+    <div class="category-grid">
+      <ion-button 
+        *ngFor="let category of exerciseCategories" 
+        fill="outline" 
+        class="category-button"
+        (click)="browseCategory(category)">
+        <ion-icon [name]="category.icon" slot="start"></ion-icon>
+        {{ category.name }}
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Weekly Summary -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>This Week</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="weekly-summary">
+        <div class="week-stat">
+          <span class="stat-number">{{ weeklyCalories }}</span>
+          <span class="stat-label">Calories Burned</span>
+        </div>
+        <div class="week-stat">
+          <span class="stat-number">{{ weeklyMinutes }}</span>
+          <span class="stat-label">Total Minutes</span>
+        </div>
+        <div class="week-stat">
+          <span class="stat-number">{{ workoutDays }}</span>
+          <span class="stat-label">Workout Days</span>
+        </div>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

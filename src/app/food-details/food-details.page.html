@@ -1,0 +1,172 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/food-search"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Food Details</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addToFavorites()" *ngIf="!isFavorite">
+        <ion-icon name="heart-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="removeFromFavorites()" *ngIf="isFavorite">
+        <ion-icon name="heart" color="danger"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div *ngIf="selectedFood">
+    <!-- Food Header -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{ selectedFood.name }}</ion-card-title>
+        <ion-card-subtitle>{{ selectedFood.brand }}</ion-card-subtitle>
+      </ion-card-header>
+    </ion-card>
+
+    <!-- Serving Size Selection -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Serving Size</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">Servings</ion-label>
+          <ion-input 
+            type="number" 
+            [(ngModel)]="servings" 
+            (ionInput)="updateNutrition()"
+            step="0.1"
+            min="0.1">
+          </ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>{{ selectedFood.serving }}</ion-label>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Nutrition Information -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Nutrition Facts</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="nutrition-item">
+          <span class="nutrition-label">Calories</span>
+          <span class="nutrition-value">{{ calculatedCalories }}</span>
+        </div>
+        <ion-item lines="none">
+          <div class="macro-breakdown">
+            <div class="macro-item">
+              <span class="macro-label">Carbs</span>
+              <span class="macro-value">{{ calculatedCarbs }}g</span>
+            </div>
+            <div class="macro-item">
+              <span class="macro-label">Fat</span>
+              <span class="macro-value">{{ calculatedFat }}g</span>
+            </div>
+            <div class="macro-item">
+              <span class="macro-label">Protein</span>
+              <span class="macro-value">{{ calculatedProtein }}g</span>
+            </div>
+          </div>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Meal Selection -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Add to Meal</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-segment [(ngModel)]="selectedMeal" (ionChange)="onMealChange($event)">
+          <ion-segment-button value="breakfast">
+            <ion-label>Breakfast</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="lunch">
+            <ion-label>Lunch</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="dinner">
+            <ion-label>Dinner</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="snacks">
+            <ion-label>Snacks</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Additional Details -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Additional Information</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item lines="none">
+          <ion-label>
+            <h3>Sodium</h3>
+            <p>{{ calculatedSodium }}mg</p>
+          </ion-label>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-label>
+            <h3>Sugar</h3>
+            <p>{{ calculatedSugar }}g</p>
+          </ion-label>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-label>
+            <h3>Fiber</h3>
+            <p>{{ calculatedFiber }}g</p>
+          </ion-label>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-label>
+            <h3>Cholesterol</h3>
+            <p>{{ calculatedCholesterol }}mg</p>
+          </ion-label>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Notes Section -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Notes (Optional)</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-textarea 
+          [(ngModel)]="notes" 
+          placeholder="Add any notes about this food entry..."
+          rows="3">
+        </ion-textarea>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <ion-button 
+        expand="block" 
+        (click)="addToMeal()" 
+        [disabled]="servings <= 0">
+        Add to {{ selectedMeal | titlecase }}
+      </ion-button>
+      <ion-button 
+        expand="block" 
+        fill="outline" 
+        (click)="saveToFavorites()" 
+        *ngIf="!isFavorite">
+        Save to Favorites
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="!selectedFood" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Loading food details...</p>
+  </div>
+</ion-content>
