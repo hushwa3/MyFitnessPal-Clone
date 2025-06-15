@@ -94,7 +94,11 @@ src/
 │   │   ├── food-search/
 │   │   ├── food-details/
 │   │   ├── exercise/
-│   │   └── profile/
+│   │   ├── add-exercise/
+│   │   ├── progress/
+│   │   ├── goals/
+│   │   ├── profile/
+│   │   └── more/
 │   ├── services/
 │   ├── components/
 │   └── models/
@@ -105,18 +109,13 @@ src/
 ## 🔧 Development Commands
 
 ```bash
+# Build for production
+ionic build
+
 # Start development server
 ionic serve
 
-# Build for production
-ionic build --prod
-
-# Run tests
-npm test
-
-# Lint code
-ionic lint
-
+If you want to add more capabilities:
 # Generate new page
 ionic generate page page-name
 
@@ -128,21 +127,22 @@ ionic generate service service-name
 
 This application supports:
 - **Web Browser** (Development & Production)
-- **iOS** (via Capacitor)
+- **iOS** (via Capacitor, but very limited due to Apple's security)
 - **Android** (via Capacitor)
 
 ### Building for Mobile
 
 ```bash
-# Add iOS platform
-ionic capacitor add ios
+# Add Android platform
+npm install @capacitor/android
 
 # Add Android platform
-ionic capacitor add android
+npx cap add android
 
-# Build and sync
-ionic capacitor build ios
-ionic capacitor build android
+# Build and sync using Android Studio
+ionic build
+npx cap sync
+npx cap open android
 ```
 
 ## 🎨 UI/UX Features
@@ -194,10 +194,6 @@ ionic capacitor build android
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 📞 Support
 
